@@ -16,7 +16,7 @@ public class SortingLettersController {
     private final SortingService sortingService;
 
     @GetMapping("/{letters}")
-    public String sortIncomingLetters(@PathVariable(value = "letters") String inputLetters) {
-        return sortingService.sortByLetters(inputLetters);
+    public String sortIncomingLetters(@PathVariable String letters) {
+        return sortingService.sortByLetters(letters);
     }
 }

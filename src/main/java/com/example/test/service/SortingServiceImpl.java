@@ -1,5 +1,6 @@
 package com.example.test.service;
 
+import com.example.test.util.CustomLinkedHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,40 +33,13 @@ public class SortingServiceImpl implements SortingService {
             }
         }
 
-        Map<String, Integer> sortedLetters = new LinkedHashMap<>() {
-            @Override
-            public String toString() {
-                Iterator<Map.Entry<String, Integer>> i = entrySet().iterator();
-                if (!i.hasNext())
-                    return "";
-
-                StringBuilder sb = new StringBuilder();
-                for (Map.Entry<String, Integer> entry : entrySet()) {
-                    Map.Entry<String, Integer> e = i.next();
-                    String key = e.getKey();
-                    Integer value = e.getValue();
-                    sb.append("\"").append(key).append("\"");
-                    sb.append(':');
-                    sb.append(value);
-                    if (i.hasNext()) {
-                        sb.append(", ");
-                    }
-                }
-                return sb.toString();
-            }
-        };
+        CustomLinkedHashMap customLinkedHashMap = new CustomLinkedHashMap();
 
         groupedLetters.entrySet()
                 .stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .forEach((i) -> sortedLetters.put(i.getKey(), i.getValue()));
-
-        // Здесь костыль, но я пока не придумала, как бороться со случаем, когда мы передаем пустое значение
-        // и PathVariable берет за значение сам ключ "letters". Прошу не судить строго :)
-        if (sortedLetters.toString().equals("\"t\":2, \"e\":2, \"r\":1, \"s\":1, \":\":1, \"l\":1")) {
-            throw new RuntimeException("Cannot use an empty String");
-        }
+                .forEach((i) -> customLinkedHashMap.sortedLetters.put(i.getKey(), i.getValue()));
 
         log.info("Letters are sorted successfully from {} to {}", inputLetters, groupedLetters);
-        return sortedLetters.toString();
+        return customLinkedHashMap.sortedLetters.toString();
     }
 }
